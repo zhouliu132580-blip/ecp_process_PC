@@ -381,7 +381,7 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
           <div className="bg-blue-50/50 rounded-lg p-6 border border-blue-100">
             <div className="flex gap-3 text-blue-600 mb-4">
               <Info size={20} className="shrink-0" />
-              <a href="#" className="underline font-medium flex items-center gap-1">
+              <a href="https://sf-alidocs.dingtalk.com/i/nodes/pYLaezmVNeY7KpklhmKl32goWrMqPxX6?utm_scene=person_space" target="_blank" rel="noopener noreferrer" className="underline font-medium flex items-center gap-1">
                 经营指标数据规范管理制度 <ExternalLink size={14} />
               </a>
             </div>
