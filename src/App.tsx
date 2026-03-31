@@ -19,7 +19,8 @@ import {
   HelpCircle,
   Download,
   ExternalLink,
-  Upload
+  Upload,
+  CheckCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -283,15 +284,49 @@ const MetricCard = ({ title, value, subValue, color, textColor }: any) => (
 );
 
 const ProcessForm = ({ onBack }: { onBack: () => void }) => {
-  const [permissionType, setPermissionType] = useState('指标新增');
+  const [applicationType, setApplicationType] = useState('指标新增');
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleSubmit = () => {
+    setShowSuccess(true);
+  };
 
   return (
     <motion.div 
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-[calc(100vh-48px)] bg-white p-6 overflow-y-auto"
+      className="min-h-[calc(100vh-48px)] bg-white p-6 overflow-y-auto relative"
     >
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white rounded-lg p-8 max-w-sm w-full flex flex-col items-center text-center shadow-2xl"
+            >
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle size={32} className="text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">申请成功</h3>
+              <p className="text-gray-500 mb-8">您的申请已提交，请耐心等待审核。</p>
+              <button 
+                onClick={onBack}
+                className="w-full py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+              >
+                回到首页
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-6xl mx-auto">
         {/* Breadcrumb / Back */}
         <button 
@@ -303,7 +338,7 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
         </button>
 
         <h1 className="text-xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100">
-          IT07x经营指标新增/变更/下线申请流程
+          IT07x经营指标新增/变更/退出申请流程
         </h1>
 
         {/* Section: 基本信息 */}
@@ -314,27 +349,24 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
           </div>
           
           <div className="grid grid-cols-4 gap-x-8 gap-y-6">
-            <FormItem label="提交人工号" required value="01386294" disabled />
-            <FormItem label="提交人姓名" value="周柳" disabled />
-            <FormItem label="申请人工号" required value="01386294" showModify />
+            <FormItem label="申请人工号" required value="01386294" />
             <FormItem label="申请人姓名" value="周柳" disabled />
           </div>
         </section>
 
-        {/* Section: 权限类型 */}
+        {/* Section: 申请类型 */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-1 h-4 bg-blue-600 rounded-full"></div>
-            <h2 className="font-bold text-gray-800">权限类型</h2>
+            <h2 className="font-bold text-gray-800">申请类型</h2>
           </div>
           
           <div className="grid grid-cols-4 gap-x-8 mb-6">
             <FormItem 
               type="select" 
-              value={permissionType} 
-              onChange={(val: string) => setPermissionType(val)}
-              options={['指标新增', '指标变更', '指标下线']}
-              showModify 
+              value={applicationType} 
+              onChange={(val: string) => setApplicationType(val)}
+              options={['指标新增', '指标变更', '指标退出']}
             />
           </div>
         </section>
@@ -346,6 +378,17 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
             <h2 className="font-bold text-gray-800">具体信息</h2>
           </div>
           
+          <div className="grid grid-cols-4 gap-x-8 mb-6">
+            <div className="col-span-4">
+              <FormItem 
+                label="申请原因" 
+                required 
+                type="textarea" 
+                placeholder="请说明背景，原因、价值点或解决什么问题"
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-4 gap-x-8">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs text-gray-500">
@@ -353,7 +396,7 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
               </label>
               <div className="flex items-center gap-2 text-blue-600 text-sm h-[38px]">
                 <FileText size={16} />
-                <a href="#" className="underline">{permissionType}申请模板</a>
+                <a href="#" className="underline">{applicationType}申请模板</a>
               </div>
             </div>
 
@@ -410,15 +453,25 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
 
         {/* Actions */}
         <div className="flex justify-center gap-4 pt-8 border-t border-gray-100">
-          <button className="px-10 py-2 border border-gray-300 rounded text-gray-600 hover:bg-gray-50 transition-colors">取消</button>
-          <button className="px-10 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-shadow shadow-lg shadow-blue-200">提交申请</button>
+          <button 
+            onClick={onBack}
+            className="px-10 py-2 border border-gray-300 rounded text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            取消
+          </button>
+          <button 
+            onClick={handleSubmit}
+            className="px-10 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-shadow shadow-lg shadow-blue-200"
+          >
+            提交申请
+          </button>
         </div>
       </div>
     </motion.div>
   );
 };
 
-const FormItem = ({ label, value, required, disabled, type = 'input', showModify, options, onChange }: any) => (
+const FormItem = ({ label, value, required, disabled, type = 'input', showModify, options, onChange, placeholder }: any) => (
   <div className="flex flex-col gap-1.5">
     {label && (
       <label className="text-xs text-gray-500">
@@ -426,7 +479,7 @@ const FormItem = ({ label, value, required, disabled, type = 'input', showModify
         {label}
       </label>
     )}
-    <div className="flex items-center gap-2">
+    <div className="flex items-start gap-2">
       <div className={`flex-1 border border-gray-300 rounded px-3 py-1.5 text-sm flex items-center justify-between relative ${disabled ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : 'bg-white'}`}>
         {type === 'select' && !disabled ? (
           <>
@@ -441,6 +494,12 @@ const FormItem = ({ label, value, required, disabled, type = 'input', showModify
             </select>
             <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           </>
+        ) : type === 'textarea' ? (
+          <textarea 
+            className="w-full bg-transparent focus:outline-none resize-none min-h-[80px] placeholder:text-gray-300"
+            placeholder={placeholder}
+            defaultValue={value}
+          />
         ) : (
           <>
             <span>{value}</span>
@@ -449,7 +508,7 @@ const FormItem = ({ label, value, required, disabled, type = 'input', showModify
         )}
       </div>
       {showModify && (
-        <button className="text-blue-500 text-xs border border-blue-500 rounded px-2 py-1 hover:bg-blue-50">修改</button>
+        <button className="text-blue-500 text-xs border border-blue-500 rounded px-2 py-1 hover:bg-blue-50 mt-1">修改</button>
       )}
     </div>
   </div>
