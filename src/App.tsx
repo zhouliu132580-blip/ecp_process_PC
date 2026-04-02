@@ -152,13 +152,13 @@ const Dashboard = ({ onNavigate }: { onNavigate: (page: Page) => void }) => {
             
             <div className="h-6 w-[1px] bg-gray-300 mx-2"></div>
             
-            {/* Target Button: 指标流程 */}
+            {/* Target Button: 指标新增/变更/退出申请 */}
             <button 
               onClick={() => onNavigate('process')}
-              className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-xs transition-colors border border-blue-200"
+              className="flex items-center gap-1.5 bg-orange-50 text-orange-700 hover:bg-orange-100 px-3 py-1.5 rounded-md text-xs font-bold transition-all border border-orange-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
             >
-              <TrendingUp size={14} />
-              <span>指标流程</span>
+              <TrendingUp size={14} className="text-orange-600" />
+              <span>指标新增/变更/退出申请</span>
             </button>
             
             <button className="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-xs transition-colors">报告管理</button>
