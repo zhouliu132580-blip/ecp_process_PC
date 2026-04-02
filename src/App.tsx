@@ -20,7 +20,8 @@ import {
   Download,
   ExternalLink,
   Upload,
-  CheckCircle
+  CheckCircle,
+  Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -284,11 +285,27 @@ const MetricCard = ({ title, value, subValue, color, textColor }: any) => (
 );
 
 const ProcessForm = ({ onBack }: { onBack: () => void }) => {
-  const [applicationType, setApplicationType] = useState('指标新增');
+  const [applicationTypes, setApplicationTypes] = useState([{ type: '指标新增', count: '1' }]);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = () => {
     setShowSuccess(true);
+  };
+
+  const addApplicationType = () => {
+    setApplicationTypes([...applicationTypes, { type: '指标新增', count: '1' }]);
+  };
+
+  const removeApplicationType = (index: number) => {
+    const newTypes = [...applicationTypes];
+    newTypes.splice(index, 1);
+    setApplicationTypes(newTypes);
+  };
+
+  const updateApplicationType = (index: number, field: string, value: string) => {
+    const newTypes = [...applicationTypes];
+    (newTypes[index] as any)[field] = value;
+    setApplicationTypes(newTypes);
   };
 
   return (
@@ -358,16 +375,55 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-1 h-4 bg-blue-600 rounded-full"></div>
-            <h2 className="font-bold text-gray-800">申请类型</h2>
+            <h2 className="font-bold text-gray-800">
+              <span className="text-red-500 mr-1">*</span>申请类型
+            </h2>
           </div>
           
-          <div className="grid grid-cols-4 gap-x-8 mb-6">
-            <FormItem 
-              type="select" 
-              value={applicationType} 
-              onChange={(val: string) => setApplicationType(val)}
-              options={['指标新增', '指标变更', '指标退出']}
-            />
+          <div className="space-y-4 mb-6">
+            {applicationTypes.map((item, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <div className="w-64">
+                  <FormItem 
+                    type="select" 
+                    value={item.type} 
+                    onChange={(val: string) => updateApplicationType(index, 'type', val)}
+                    options={['指标新增', '指标变更', '指标退出']}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="number"
+                    min="1"
+                    value={item.count}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (val >= 1 || e.target.value === '') {
+                        updateApplicationType(index, 'count', e.target.value);
+                      }
+                    }}
+                    className="w-20 border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400"
+                    placeholder="数量"
+                  />
+                  <span className="text-sm text-gray-600">个指标</span>
+                </div>
+                {applicationTypes.length > 1 && (
+                  <button 
+                    onClick={() => removeApplicationType(index)}
+                    className="text-red-400 hover:text-red-600 p-1 transition-colors"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+              </div>
+            ))}
+            <button 
+              onClick={addApplicationType}
+              className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700 transition-colors mt-2"
+            >
+              <Plus size={16} />
+              <span>添加申请类型</span>
+            </button>
           </div>
         </section>
 
@@ -396,7 +452,7 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
               </label>
               <div className="flex items-center gap-2 text-blue-600 text-sm h-[38px]">
                 <FileText size={16} />
-                <a href="#" className="underline">{applicationType}申请模板</a>
+                <a href="#" className="underline">指标需求申请模板</a>
               </div>
             </div>
 
@@ -430,22 +486,12 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
             </div>
             
             <div className="text-xs text-gray-500 space-y-4 leading-relaxed">
-              <div>
-                <p className="font-bold text-gray-700 mb-1">1、经营数据变动管理流程</p>
-                <p>经营数据变动管理以线上化经营数库为基础，构建指标新增、变更、退出的全生命周期管理机制：</p>
-                <p>①、指标变动需求发起：由各职能与经营体指标 OWNER 发起变动申请，经上级管理者业务审批后，提报数据线上化需求至企发办。</p>
-                <p>②、指标变动需求评审：企发办从指标体系与数据规范维度完成最终审核，通过后将需求输出至科技部门开展线上化迭代优化。</p>
-                <p>③、经营数据库更新：企发办经营数智团统筹更新线上化经营数据库及应用工具，确保数据与前端业务展示的一致性与准确性。</p>
-              </div>
-              
-              <div>
-                <p className="font-bold text-gray-700 mb-1">2、数据安全使用管控</p>
-                <p>经营指标数据仅限公司内部使用（经集团法务审批合规的对外公布数据除外），违规使用将按《员工奖惩手册》及相关制度处罚。</p>
-              </div>
-
-              <div>
-                <p className="font-bold text-gray-700 mb-1">3、奖罚规则</p>
-                <p>为规范公司经营数据管理，保障经营数据的准确性、可用性，及时处理经营数据异常、偏差及错误问题，为落实相关方责任则，提升数据治理水平，依据公司《奖励与处罚管理规定V7.0》对相关责任人进行处罚</p>
+              <div className="space-y-2">
+                <p className="font-bold text-gray-700">*注：</p>
+                <p>1、如指标变动流程撤销或被驳回后，需要重新进入经营数智新建流程提交；</p>
+                <p>2、新增：除【指标编码】外，标*字段为必填字段</p>
+                <p>3、变更：全部标*字段为必填字段，科技研发以“指标需求申请模版”最新内容为准，前期已上线的指标内容不再使用</p>
+                <p>4、下线：【指标需求】、【指标owner姓名】、【指标owner工号】、【指标编码】、【指标名称】为必填字段，其它标*字段为选填字段</p>
               </div>
             </div>
           </div>
