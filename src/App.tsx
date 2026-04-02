@@ -284,6 +284,8 @@ const MetricCard = ({ title, value, subValue, color, textColor }: any) => (
   </div>
 );
 
+const ALL_TYPES = ['指标新增', '指标变更', '指标退出'];
+
 const ProcessForm = ({ onBack }: { onBack: () => void }) => {
   const [applicationTypes, setApplicationTypes] = useState([{ type: '指标新增', count: '1' }]);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -293,7 +295,11 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
   };
 
   const addApplicationType = () => {
-    setApplicationTypes([...applicationTypes, { type: '指标新增', count: '1' }]);
+    if (applicationTypes.length < ALL_TYPES.length) {
+      const usedTypes = applicationTypes.map(at => at.type);
+      const nextType = ALL_TYPES.find(t => !usedTypes.includes(t)) || ALL_TYPES[0];
+      setApplicationTypes([...applicationTypes, { type: nextType, count: '1' }]);
+    }
   };
 
   const removeApplicationType = (index: number) => {
@@ -381,49 +387,57 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
           </div>
           
           <div className="space-y-4 mb-6">
-            {applicationTypes.map((item, index) => (
-              <div key={index} className="flex items-center gap-4">
-                <div className="w-64">
-                  <FormItem 
-                    type="select" 
-                    value={item.type} 
-                    onChange={(val: string) => updateApplicationType(index, 'type', val)}
-                    options={['指标新增', '指标变更', '指标退出']}
-                  />
+            {applicationTypes.map((item, index) => {
+              const availableOptions = ALL_TYPES.filter(t => 
+                t === item.type || !applicationTypes.some(at => at.type === t)
+              );
+              
+              return (
+                <div key={index} className="flex items-center gap-4">
+                  <div className="w-64">
+                    <FormItem 
+                      type="select" 
+                      value={item.type} 
+                      onChange={(val: string) => updateApplicationType(index, 'type', val)}
+                      options={availableOptions}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="number"
+                      min="1"
+                      value={item.count}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value);
+                        if (val >= 1 || e.target.value === '') {
+                          updateApplicationType(index, 'count', e.target.value);
+                        }
+                      }}
+                      className="w-20 border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400"
+                      placeholder="数量"
+                    />
+                    <span className="text-sm text-gray-600">个指标</span>
+                  </div>
+                  {applicationTypes.length > 1 && (
+                    <button 
+                      onClick={() => removeApplicationType(index)}
+                      className="text-red-400 hover:text-red-600 p-1 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <input 
-                    type="number"
-                    min="1"
-                    value={item.count}
-                    onChange={(e) => {
-                      const val = parseInt(e.target.value);
-                      if (val >= 1 || e.target.value === '') {
-                        updateApplicationType(index, 'count', e.target.value);
-                      }
-                    }}
-                    className="w-20 border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-400"
-                    placeholder="数量"
-                  />
-                  <span className="text-sm text-gray-600">个指标</span>
-                </div>
-                {applicationTypes.length > 1 && (
-                  <button 
-                    onClick={() => removeApplicationType(index)}
-                    className="text-red-400 hover:text-red-600 p-1 transition-colors"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                )}
-              </div>
-            ))}
-            <button 
-              onClick={addApplicationType}
-              className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700 transition-colors mt-2"
-            >
-              <Plus size={16} />
-              <span>添加申请类型</span>
-            </button>
+              );
+            })}
+            {applicationTypes.length < ALL_TYPES.length && (
+              <button 
+                onClick={addApplicationType}
+                className="flex items-center gap-1 text-blue-600 text-sm hover:text-blue-700 transition-colors mt-2"
+              >
+                <Plus size={16} />
+                <span>添加申请类型</span>
+              </button>
+            )}
           </div>
         </section>
 
