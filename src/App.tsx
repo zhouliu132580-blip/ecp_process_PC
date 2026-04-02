@@ -478,20 +478,23 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
           </div>
           
           <div className="bg-blue-50/50 rounded-lg p-6 border border-blue-100">
-            <div className="flex gap-3 text-blue-600 mb-4">
-              <Info size={20} className="shrink-0" />
-              <a href="https://sf-alidocs.dingtalk.com/i/nodes/pYLaezmVNeY7KpklhmKl32goWrMqPxX6?utm_scene=person_space" target="_blank" rel="noopener noreferrer" className="underline font-medium flex items-center gap-1">
-                经营指标数据规范管理制度 <ExternalLink size={14} />
-              </a>
-            </div>
-            
             <div className="text-xs text-gray-500 space-y-4 leading-relaxed">
               <div className="space-y-2">
-                <p className="font-bold text-gray-700">*注：</p>
                 <p>1、如指标变动流程撤销或被驳回后，需要重新进入经营数智新建流程提交；</p>
                 <p>2、新增：除【指标编码】外，标*字段为必填字段</p>
                 <p>3、变更：全部标*字段为必填字段，科技研发以“指标需求申请模版”最新内容为准，前期已上线的指标内容不再使用</p>
                 <p>4、下线：【指标需求】、【指标owner姓名】、【指标owner工号】、【指标编码】、【指标名称】为必填字段，其它标*字段为选填字段</p>
+                <p className="mt-4">
+                  ECP公文链接：
+                  <a 
+                    href="https://sf-alidocs.dingtalk.com/i/nodes/pYLaezmVNeY7KpklhmKl32goWrMqPxX6?utm_scene=person_space" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-600 hover:underline inline-flex items-center gap-1"
+                  >
+                    经营指标数据规范管理制度 <ExternalLink size={12} />
+                  </a>
+                </p>
               </div>
             </div>
           </div>
