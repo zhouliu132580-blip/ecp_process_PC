@@ -361,7 +361,7 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
         </button>
 
         <h1 className="text-xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100">
-          IT07x经营指标新增/变更/退出申请流程
+          IT368-01P经营指标新增/变更/退出申请流程
         </h1>
 
         {/* Section: 基本信息 */}
@@ -498,7 +498,7 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
                 <p>1、如指标变动流程撤销或被驳回后，需要重新进入经营数智新建流程提交；</p>
                 <p>2、新增：除【指标编码】外，标*字段为必填字段</p>
                 <p>3、变更：全部标*字段为必填字段，科技研发以“指标需求申请模版”最新内容为准，前期已上线的指标内容不再使用</p>
-                <p>4、下线：【指标需求】、【指标owner姓名】、【指标owner工号】、【指标编码】、【指标名称】为必填字段，其它标*字段为选填字段</p>
+                <p>4、退出：【指标需求】、【指标owner姓名】、【指标owner工号】、【指标编码】、【指标名称】为必填字段，其它标*字段为选填字段</p>
                 <p className="mt-4">
                   ECP公文链接：
                   <a 
