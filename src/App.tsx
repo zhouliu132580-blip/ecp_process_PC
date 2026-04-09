@@ -373,7 +373,8 @@ const ProcessForm = ({ onBack }: { onBack: () => void }) => {
           
           <div className="grid grid-cols-4 gap-x-8 gap-y-6">
             <FormItem label="申请人工号" required value="01386294" />
-            <FormItem label="申请人姓名" value="周柳" disabled />
+            <FormItem label="申请人姓名" value="梁婷婷" disabled />
+            <FormItem label="申请人组织" value="小件组织-小件产品业务处" disabled />
           </div>
         </section>
 
